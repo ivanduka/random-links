@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proof of concept</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mb-5">
+            The link below will be random for a new person visiting the website but stay the same for the same visitor:
+        </h2>
+        <a href="" id="targetLink" target="blank_"></a>
+        <div class="mt-5">
+            If you reload this page, you will see the same link. However, if a new user comes to the
+            website, they will see a new link.
+        </div>
+        <div class="mt-5">
+            <button class="btn btn-primary" id="cleanCookie" type="button">
+                Remove the cookie and reload the page to see a new link (emulating a new user)
+            </button>
+        </div>
+    </div>
+</body>
+<script>
+    // Choosing the name of the cookie
+    const cookieName = "randomLink";
+
+    // List of links to choose from
+    const links = ["http://example.com/bear",
+        "https://www.example.edu/attack.php",
+        "https://www.example.com/?agreement=blood",
+        "https://www.example.net/bone/ball?afterthought=boy",
+        "https://example.edu/blow.aspx?attack=appliance",
+        "https://www.example.com/birds/balance",
+        "https://example.com/",
+        "http://www.example.com/",
+        "http://www.example.com/",
+        "https://www.example.com/branch.php",
+        "http://www.example.com/afterthought.php",
+        "http://airport.example.com/",
+        "https://www.example.com/",
+        "http://www.example.com/",
+        "https://www.example.com/act",
+        "https://www.example.net/actor/activity?brake=brake",
+        "https://bath.example.net/balance/books",
+        "https://example.com/",
+        "https://www.example.com/",
+        "http://example.com/",
+        "http://www.example.com/addition/apparatus.html",
+        "http://www.example.edu/bubble.php?bubble=bath&authority=beef",
+        "https://www.example.com/bag",
+        "https://www.example.org/",
+        "https://example.com/?adjustment=books&bike=addition",
+        "https://example.org/approval/action.aspx#behavior",
+        "http://example.com/basin.php#beds",
+        "https://www.example.org/?actor=account",
+        "https://www.example.com/amusement/arithmetic",
+        "https://www.example.com/?boundary=act&base=bells",
+        "https://ants.example.com/anger.html?bee=alarm",
+        "https://account.example.com/",
+        "http://www.example.net/?addition=apparatus&advertisement=basketball",
+        "https://www.example.com/",
+        "https://www.example.com/baby/aftermath",
+        "https://bat.example.com/",
+        "http://example.com/box/anger.aspx",
+        "https://www.example.com/books/balance.php",
+        "https://www.example.com/",
+        "http://example.org/",
+        "https://www.example.com/",
+        "https://www.example.com/?army=argument",
+        "http://www.example.com/bells?border=bag&attack=behavior#aunt",
+        "https://example.com/arm/bite.html",
+        "http://www.example.com/",
+        "https://example.org/",
+        "https://example.com/advertisement?argument=bed&animal=angle",
+        "http://example.com/bells/believe.html?airplane=advertisement",
+        "http://www.example.org/",
+        "https://example.com/",
+        "https://www.example.com/boundary.html?bone=ball&birth=attack",
+        "https://example.net/",
+        "https://www.example.com/",
+        "https://book.example.com/",
+        "https://www.example.com/angle/birth.html?blood=boot&aunt=basin",
+        "http://www.example.com/anger/bag.html",
+        "https://example.com/badge.php",
+        "https://www.example.com/babies/appliance.aspx",
+        "https://bead.example.com/",
+        "https://example.com/?board=board&baby=airplane",
+        "http://bit.example.com/",
+        "http://bells.example.com/angle/advertisement?air=border",
+        "http://example.com/",
+        "https://www.example.com/bee/bear.htm?bat=air&blade=breath",
+        "http://www.example.net/bait/bedroom",
+        "https://www.example.com/birth.php",
+        "https://www.example.com/bedroom/blood?amount=bikes&boat=baby",
+        "https://www.example.com/?bikes=bottle&approval=art",
+        "https://example.com/",
+        "https://www.example.edu/birth",
+        "http://example.com/acoustics",
+        "https://www.example.com/?angle=blow",
+        "https://www.example.com/bone/birds.php",
+        "http://example.com/?activity=action",
+        "http://example.com/aftermath/advertisement",
+        "http://example.edu/?acoustics=army&afterthought=basketball",
+        "https://www.example.com/advertisement/ball.html",
+        "https://www.example.com/base",
+        "http://afterthought.example.com/apparel.php?authority=afterthought&bite=blade",
+        "http://badge.example.com/",
+        "http://brake.example.com/bed",
+        "http://example.com/?birth=back",
+        "https://www.example.com/alarm/army.html",
+        "http://example.com/",
+        "https://example.com/",
+        "https://www.example.com/",
+        "http://www.example.com/attack",
+        "http://www.example.com/beds",
+        "https://www.example.com/#breath",
+        "https://example.org/art/bite",
+        "https://example.com/",
+        "https://example.com/birds.aspx",
+        "http://example.com/?achiever=bit",
+        "http://www.example.com/bite.html",
+        "https://www.example.com/blade.html#brother",
+        "http://www.example.com/believe/bell.aspx#breath",
+        "http://www.example.com/bedroom/attack.php#bells",
+        "http://www.example.com/brick?ball=bee&arithmetic=belief",
+        "https://bait.example.com/?boy=brick",
+        "https://example.com/"]
+
+    // Get the random number between 0 and the number of links in the array
+    const getRandom = () => Math.floor(Math.random() * links.length);
+
+    // Check if the user visited before and has the cookie with the saved option that was shown to them before
+    const cookie = Cookies.get(cookieName);
+
+    // Getting the link index from the cookie or generating a new one randomly
+    const linkIndex = cookie === undefined ? getRandom() : Number.parseInt(cookie, 10);
+
+    // Setting the cookie again to prolong its life to 365 days or setting a new cookie
+    Cookies.set(cookieName, linkIndex, { expires: 365 });
+
+    // Changing the text in the div to link
+    const targetLink = document.getElementById("targetLink");
+    targetLink.innerHTML = links[linkIndex];
+    targetLink.href = links[linkIndex];
+
+    // Setting a function on a button that clears the cookie and reloads the page
+    document.getElementById("cleanCookie").onclick = () => {
+        Cookies.remove(cookieName);
+        location.reload();
+    }
+</script>
+
+</html>
